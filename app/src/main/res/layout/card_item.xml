@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/cardItem"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    card_view:cardCornerRadius="12dp"
+    card_view:cardElevation="3dp"
+    card_view:contentPadding="4dp"
+    android:layout_margin="5dp">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+            <ImageView
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:id="@+id/cardImage"
+                android:src="@drawable/imageone"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentLeft="true"
+                android:layout_marginRight="16dp"/>
+            <TextView
+                android:id="@+id/cardName"
+                android:layout_marginTop="10dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_alignParentTop="true"
+                android:layout_toEndOf="@+id/cardImage"
+                android:layout_toRightOf="@+id/cardImage"
+                android:text="Chapter One"
+                android:textSize="30sp"/>
+
+            <TextView
+                android:id="@+id/cardName1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@+id/cardImage"
+                android:fontFamily="sans-serif-condensed"
+                android:layout_toRightOf="@+id/cardImage"
+                android:layout_below="@+id/cardName"
+                android:text="Card item One"/>
+        </RelativeLayout>
+
+
+</android.support.v7.widget.CardView>

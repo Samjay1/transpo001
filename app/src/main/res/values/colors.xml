@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6d0094</color>
+    <color name="colorPrimaryDark">#6d0094</color>
+    <color name="colorAccent">#ff2068</color>
+    <color name="colorAccentSecondary">#ad1a7f</color>
+    <color name="trans">#45B8B8B8</color>
+    <color name="viewBg">#f8f8f8</color>
+    <color name="btn_disabled">#999</color>
+    <color name="lbl_value">#222222</color>
+    <color name="gray">#868686</color>
+</resources>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="200dp">
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/bg_gradient"
+        android:padding="20dp"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Enter Token"
+            android:textColor="#fff"
+            android:textSize="31dp"/>
+        <EditText
+            android:id="@+id/tokentext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:hint="Token"
+            android:textColor="#fff"
+            android:textColorHint="#fff"/>
+        <Button
+            android:id="@+id/ftbtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/btnclickstyle"
+            android:layout_marginTop="20dp"
+            android:text="Submit"
+            android:textColor="#fff"/>
+    </LinearLayout>
+
+</LinearLayout>

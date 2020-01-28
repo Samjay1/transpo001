@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="50dp"
+    android:background="@drawable/bg_gradient"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/fragment_notification"
+    tools:context=".DashboardFragment">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+       <android.support.v7.widget.CardView
+           android:id="@+id/cardlable"
+           android:layout_width="match_parent"
+           android:layout_height="wrap_content"
+           card_view:cardCornerRadius="5dp"
+           card_view:contentPadding="4dp"
+           android:layout_margin="5dp">
+          <TextView
+              android:textAlignment="center"
+              android:layout_gravity="center"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_margin="15dp"
+              android:fontFamily="sans-serif-condensed"
+              android:text="Choose any Bus Company here"
+              android:textSize="20sp"/>
+       </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/cardlable">
+
+        </android.support.v7.widget.RecyclerView>
+
+    </RelativeLayout>
+</FrameLayout>
