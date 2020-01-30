@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -58,6 +59,8 @@ public class PaymentActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        ActivityCompat.requestPermissions(PaymentActivity.this,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS},PackageManager.PERMISSION_GRANTED);
+
 
         paybtn = findViewById(R.id.buybtn);
         fname = findViewById(R.id.fname);
@@ -211,17 +214,17 @@ public class PaymentActivity extends AppCompatActivity {
         }
     }
 
-    public void sendToDB(String TransactionId, String flwRef, String paymentMethod){
+    public void sendToDB(final String TransactionId, String flwRef, String paymentMethod){
 
         SharedPreferences sharedPreferences = this.getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        String user_phone = sharedPreferences.getString("phone","");
+        final String user_phone = sharedPreferences.getString("phone","");
 
 
         String FIRSTNAME = fname.getText().toString();
         String SURNAME = sname.getText().toString();
         String PHONE = phone.getText().toString();
-        String FROM = getIntent().getStringExtra("FROM");
-        String TO =  getIntent().getStringExtra("TO");
+        final String FROM = getIntent().getStringExtra("FROM");
+        final String TO =  getIntent().getStringExtra("TO");
         String COMPANY_ID =  getIntent().getStringExtra("COMPANY_ID");
         final String COMPANY_NAME =  getIntent().getStringExtra("COMPANY_NAME");
         final String BUS =  getIntent().getStringExtra("BUS");
@@ -232,7 +235,7 @@ public class PaymentActivity extends AppCompatActivity {
         final String COST =  getIntent().getStringExtra("COST");
         final String DURATION =  getIntent().getStringExtra("DURATION");
 
-        String TRANSACTION = TransactionId;
+        final String TRANSACTION = TransactionId;
 
         //new code
         final JSONObject params = new JSONObject();
@@ -271,7 +274,11 @@ public class PaymentActivity extends AppCompatActivity {
                                 startActivity(new Intent(getApplication(), MainActivity.class));
 //                                Intent intent = new Intent(getActivity(), new TicketsFragment());
 //                                getActivity().startActivity(intent);
-                                send_sms("+233547785025","TICKET BOOK FROM ACCRA TO KUMASI.\n Transaction Id: SHAKDEODSK");
+
+                                send_sms("TICKET ALERT \nTranspo ticket Booker \nCompany: "+ COMPANY_NAME+
+                                        "\nDestination: " + FROM+ " to " + TO +
+                                        "\nTicket Code: "+ TransactionId +" has been Booked", user_phone);
+
                                 finishAffinity();
 //                                    finish();
                             }
@@ -304,20 +311,12 @@ public class PaymentActivity extends AppCompatActivity {
         if(item.getItemId()== android.R.id.home){
             this.finish();
         }
-
         return super.onOptionsItemSelected(item);
     }
-    public void send_sms(String phone_no, String message){
-        if(PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)){
-            Intent intent=new Intent(getApplicationContext(),MainActivity.class);
-            PendingIntent pi=PendingIntent.getActivity(getApplicationContext(), 0, intent,0);
+    public void send_sms(String message, String phone){
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phone, null,message, null,null);
 
-            //Get the SmsManager instance and call the sendTextMessage method to send message
-            SmsManager sms=SmsManager.getDefault();
-            sms.sendTextMessage(phone_no, null, message, pi,null);
-
-        }
-        //Getting intent and PendingIntent instance
-
+        Log.i("trans", smsManager.toString());
     }
 }

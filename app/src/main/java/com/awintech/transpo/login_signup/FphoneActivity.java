@@ -1,10 +1,16 @@
 package com.awintech.transpo.login_signup;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.telephony.SmsManager;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.Window;
@@ -35,6 +41,7 @@ public class FphoneActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fphone);
 
+        ActivityCompat.requestPermissions(FphoneActivity.this,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS}, PackageManager.PERMISSION_GRANTED);
         mqueue = Volley.newRequestQueue(this);
         logphone = findViewById(R.id.logphone);
         ftokenbtn = (Button) findViewById(R.id.ftokenbtn);
@@ -125,9 +132,13 @@ public class FphoneActivity extends AppCompatActivity {
                                 String status = response.getString("status");
                                 String token = response.getString("token");
                                 if((status.matches("success"))){
+
+                                    send_sms("TOKEN ALERT \n Transpo ticket Booker"+
+                                            " \n Token: "+ token, loginephone);
+
                                     progressDialog.dismiss();
-                                    Toast.makeText(getApplicationContext(), status, Toast.LENGTH_SHORT).show();
-                                    Toast.makeText(getApplicationContext(), token, Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(),"Check your SMS for Token", Toast.LENGTH_LONG).show();
+                                    Toast.makeText(getApplicationContext(),token, Toast.LENGTH_LONG).show();
                                     Preview_dialog(token, loginephone);
 
                                 }
@@ -157,6 +168,15 @@ public class FphoneActivity extends AppCompatActivity {
             mqueue.add(request);
 
         }
+    }
+
+    public void send_sms(String message, String phone){
+        ActivityCompat.requestPermissions(FphoneActivity.this,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS}, PackageManager.PERMISSION_GRANTED);
+
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phone, null,message, null,null);
+
+        Log.i("trans", smsManager.toString());
     }
 
 }

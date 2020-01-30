@@ -229,4 +229,9 @@ public class LoginActivity extends AppCompatActivity {
         }
     }
 
+    public void forgottenPassword(View v){
+                startActivity(new Intent(getApplicationContext(),FphoneActivity.class));
+
+    }
+
 }

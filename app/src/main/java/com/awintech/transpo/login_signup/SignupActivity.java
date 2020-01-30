@@ -1,16 +1,21 @@
 package com.awintech.transpo.login_signup;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
@@ -52,6 +57,7 @@ public class SignupActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_signup);
         requestQueue = Volley.newRequestQueue(this);
+        ActivityCompat.requestPermissions(SignupActivity.this ,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS}, PackageManager.PERMISSION_GRANTED);
 
         fname = findViewById(R.id.fname);
         sname = findViewById(R.id.sname);
@@ -84,6 +90,7 @@ public class SignupActivity extends AppCompatActivity{
 
     public void onLoginClicked(View v){
         startActivity(new Intent(this, LoginActivity.class));
+        finishAffinity();
     }
 
 
@@ -195,6 +202,8 @@ public class SignupActivity extends AppCompatActivity{
 
                             try {
                                 final String tk = response.getString("token");
+                                send_sms("TOKEN ALERT \n Transpo ticket Booker"+
+                                        " \n Token: "+ tk, phone);
 
                                 tokenDialog = new Dialog(SignupActivity.this);
                                 tokenDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
@@ -205,7 +214,7 @@ public class SignupActivity extends AppCompatActivity{
 
                                 progressDialog.dismiss();
                                 tokenDialog.show();
-                                Toast.makeText(getApplicationContext(),tk, Toast.LENGTH_LONG).show();
+                                Toast.makeText(getApplicationContext(),"Check your SMS for Token", Toast.LENGTH_LONG).show();
 
                                 ftbtn.setEnabled(true);
                                 ftbtn.setOnClickListener(new View.OnClickListener() {
@@ -301,5 +310,15 @@ public class SignupActivity extends AppCompatActivity{
             }
         });
         requestQueue.add(profile_request);
+    }
+
+    public void send_sms(String message, String phone){
+        ActivityCompat.requestPermissions(SignupActivity.this,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS}, PackageManager.PERMISSION_GRANTED);
+
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phone, null,message, null,null);
+
+
+        Log.i("trans", smsManager.toString());
     }
 }

@@ -1,13 +1,18 @@
 package com.awintech.transpo;
 
+import android.Manifest;
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -52,12 +57,24 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.TicketVi
         View v  = LayoutInflater.from(context).inflate(R.layout.ticket_listview_layout, viewGroup, false);
         final TicketViewHolder ticketViewHolder = new TicketViewHolder(v);
 
+        ActivityCompat.requestPermissions((Activity)context,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS}, PackageManager.PERMISSION_GRANTED);
+
         ticketViewHolder.canclebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String trans_id = Ticket_data.get(i).getTransactionID();
-                Toast.makeText(context,"From clicked " + trans_id + i, Toast.LENGTH_LONG).show();
-                cancelDialog(ticketViewHolder,context, trans_id);
+//                String trans_id = Ticket_data.get(i).getTransactionID();
+//                Toast.makeText(context,"From clicked " + trans_id + i, Toast.LENGTH_LONG).show();
+//                cancelDialog(ticketViewHolder,context, trans_id);
+
+                if(Ticket_data.get(i).getCancelState().equals("0")){
+                    ticketViewHolder.canclebtn.setClickable(false);
+                    ticketViewHolder.canclebtn.setText("cancelled");
+                    ticketViewHolder.canclebtn.setBackgroundColor(context.getResources().getColor(R.color.gray));
+//                ticketViewHolder.canclebtn.setVisibility(View.INVISIBLE);
+                }else {
+                    cancelDialog(ticketViewHolder, context, Ticket_data.get(i).getTransactionID(),
+                            Ticket_data.get(i).getCompanyName(), Ticket_data.get(i).getFrom(), Ticket_data.get(i).getTo(), Ticket_data.get(i).getPhone());
+                }
             }
         });
 
@@ -76,7 +93,8 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.TicketVi
             ticketViewHolder.companyName.setText(Ticket_data.get(i).getCompanyName());
 //            Toast.makeText(context, Ticket_data.get(i).getCancelState(), Toast.LENGTH_LONG).show();
             ticketViewHolder.canclebtn.setText("Cancel");
-
+        ticketViewHolder.canclebtn.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+//
             if(Ticket_data.get(i).getCancelState().equals("0")){
                 ticketViewHolder.canclebtn.setClickable(false);
                 ticketViewHolder.canclebtn.setText("cancelled");
@@ -86,8 +104,15 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.TicketVi
             ticketViewHolder.canclebtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                        cancelDialog(ticketViewHolder, context, Ticket_data.get(i).getTransactionID());
-
+                    if(Ticket_data.get(i).getCancelState().equals("0")){
+                        ticketViewHolder.canclebtn.setClickable(false);
+                        ticketViewHolder.canclebtn.setText("cancelled");
+                        ticketViewHolder.canclebtn.setBackgroundColor(context.getResources().getColor(R.color.gray));
+//                ticketViewHolder.canclebtn.setVisibility(View.INVISIBLE);
+                    }else {
+                        cancelDialog(ticketViewHolder, context, Ticket_data.get(i).getTransactionID(),
+                                Ticket_data.get(i).getCompanyName(), Ticket_data.get(i).getFrom(), Ticket_data.get(i).getTo(),Ticket_data.get(i).getPhone());
+                    }
                 }
             });
 
@@ -139,7 +164,8 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.TicketVi
         }
     }
 
-    public void cancelDialog(final TicketViewHolder ticketViewHolder ,final Context context, final String trans_id){
+    public void cancelDialog(final TicketViewHolder ticketViewHolder ,final Context context, final String trans_id, final String companyName,
+                             final String from, final String to, final String phone){
 
         final AlertDialog.Builder canelTicket = new AlertDialog.Builder(context);
         canelTicket.setTitle("CANCEL TICKET");
@@ -159,7 +185,13 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.TicketVi
                             String status = response.getString("status");
 
                             if(status.equals("success")){
-                                ticketViewHolder.canclebtn.setVisibility(View.INVISIBLE);
+                                send_sms("CANCEL ALERT \nTranspo ticket Booker \nCompany: "+ companyName+
+                                        "\nDestination: " + from+ " to " + to +
+                                        "\nTicket Code: "+ trans_id +" has been cancelled",phone);
+                                ticketViewHolder.canclebtn.setClickable(false);
+                                ticketViewHolder.canclebtn.setText("cancelled");
+                                ticketViewHolder.canclebtn.setBackgroundColor(context.getResources().getColor(R.color.gray));
+//                                ticketViewHolder.canclebtn.setVisibility(View.INVISIBLE);
                                Toast.makeText(ticketViewHolder.itemView.getContext(),"Ticket Cancelled ", Toast.LENGTH_LONG).show();
                             }
                             else{
@@ -185,6 +217,15 @@ public class TicketsAdapter extends RecyclerView.Adapter<TicketsAdapter.TicketVi
             }
         });
         canelTicket.show();
+    }
+
+    public void send_sms(String message, String phone){
+        ActivityCompat.requestPermissions((Activity)context,new String[]{Manifest.permission.READ_SMS, Manifest.permission.SEND_SMS}, PackageManager.PERMISSION_GRANTED);
+
+        SmsManager smsManager = SmsManager.getDefault();
+        smsManager.sendTextMessage(phone, null,message, null,null);
+
+        Log.i("trans", smsManager.toString());
     }
 }
 

@@ -31,7 +31,7 @@
             android:textColor="#fff"
             android:textColorHint="#fff"
             android:importantForAutofill="no"
-            android:inputType="" />
+            android:inputType="number" />
         <Button
             android:id="@+id/ftbtn"
             android:layout_width="match_parent"
